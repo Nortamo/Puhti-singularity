@@ -1,0 +1,17 @@
+Bootstrap: docker
+
+From: continuumio/miniconda3
+
+%post
+    echo eval "$(/opt/conda/bin/conda shell.bash hook)" >> /etc/bashrc
+    echo . /opt/conda/etc/profile.d/conda.sh >> /etc/bashrc
+    chmod o+wrXs -R /opt/conda/
+
+%runscript
+    eval "$(/opt/conda/bin/conda shell.bash hook)"
+    . /opt/conda/etc/profile.d/conda.sh
+    if test ! -z "$CONDA_ENV" ;then
+        echo "Activating ${CONDA_ENV}"
+        conda activate ${CONDA_ENV}
+    fi
+    exec "$@"
